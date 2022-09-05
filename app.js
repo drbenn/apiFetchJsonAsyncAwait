@@ -4,58 +4,21 @@ console.log('hello');
 const btn = document.querySelector('.btn-fetch');
 const activityContainer = document.getElementById('activityContainer');
 
-const api_url = 'https://www.boredapi.com/api/activity';
+// const api_url = 'https://www.boredapi.com/api/activity';
+// https://datausa.io/profile/geo/arlington-va#about
 
-const addDataToDom = function (activity, type, participants, price, link) {
-  let newDiv = document.createElement('div');
-  newDiv.setAttribute('id', 'existing-activity');
-  //   Add Activty/Title to newDiv
-  let newTitle = document.createElement('h4');
-  let newTitleText = document.createTextNode(activity);
-  newTitle.appendChild(newTitleText);
-  newDiv.appendChild(newTitle);
-  // Add unordered list to newDiv for other descriptives
-  let newUl = document.createElement('ul');
-  newDiv.appendChild(newUl);
-  //   Add type of activity to newDiv
-  let newLiType = document.createElement('li');
-  let liTypeText = document.createTextNode(`Type: ${type}`);
-  newLiType.appendChild(liTypeText);
-  newDiv.appendChild(newLiType);
-  //   Add participants of activity to newDiv
-  let newLiParticipants = document.createElement('li');
-  let liParticipantsText = document.createTextNode(`People Needed: ${participants}`);
-  newLiParticipants.appendChild(liParticipantsText);
-  newDiv.appendChild(newLiParticipants);
-  //   Add price to newDiv
-  let newLiPrice = document.createElement('li');
-  let priceExplain = '';
-  if (price === '0') {
-    priceExplain = 'free';
-  } else {
-    priceExplain = 'Varies';
-  }
-  let liPriceText = document.createTextNode(`Price: ${priceExplain}`);
-  newLiPrice.appendChild(liPriceText);
-  newDiv.appendChild(newLiPrice);
-  //   Add link to activity to newDiv
-  if (link) {
-    let newLiLink = document.createElement('li');
-    let liLinkText = document.createTextNode(`Link: ${link}`);
-    newLiLink.appendChild(liLinkText);
-    newDiv.appendChild(newLiLink);
-  }
+const api_url_commuteTime = `https://datausa.io/api/data?measure=Average Commute Time&drilldowns=Place`;
+const api_url_commuteMethod = `https://datausa.io/api/data?measure=Commute Means,Commute Means%20Moe&geo=16000US5103000&drilldowns=Group`;
+const api_url_carsPerHousehold = `https://datausa.io/api/data?measure=Commute%20Means%20by%20Gender,Commute%20Means%20by%20Gender%20Moe&geo=16000US5103000,01000US&drilldowns=Vehicles%20Available`;
 
-  activityContainer.appendChild(newDiv);
-  console.log('done');
-};
+const api_urls = [api_url_commuteTime, api_url_commuteMethod, api_url_carsPerHousehold];
 
 const getApiData = async function () {
-  console.log('click');
-  let response = await fetch(api_url);
-  let data = await response.json();
-  let { activity, type, participants, price, link } = data;
-  addDataToDom(activity, type, participants, price, link);
+  for (url of api_urls) {
+    let contents = await fetch(url);
+    let data = await contents.json();
+    console.log(data);
+  }
 };
 
 const clearExistingActivity = function () {
@@ -69,6 +32,7 @@ const clearExistingActivity = function () {
 const clickAction = function () {
   clearExistingActivity();
   getApiData();
+  // getToken();
 };
 
 btn.addEventListener('click', clickAction);
